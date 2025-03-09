@@ -7,19 +7,32 @@ function App() {
     console.log("Button clicked!");
     const input = document.getElementById("taskinput");
     input.value = null;
+    const dinput=document.getElementById("dateinput");
+    dinput.value=null;
+    
   }
   function handleSave() {  
-    const input = document.getElementById("taskinput");
-    const inputValue = input.value;
+    const input=document.getElementById("taskinput");
+    const inputvalue=input.value;
+    
+    const dinput=document.getElementById("dateinput");
+    const dinputvalue=dinput.value;//
 
-    if(!inputValue){
+    if(!dinputvalue){
       return;
     }
-    console.log(inputValue);
-    console.log("Button clicked!");
-    var newArray =tasks.slice();    
-    newArray.push(inputValue);   
-    setTasks(newArray);
+    
+    if(!inputvalue){
+      return;
+    }
+  var newArray=tasks.slice();
+   let b={};
+   b['desc']=inputvalue;
+   b['date']=dinputvalue;
+  newArray.push(b);
+  setTasks(newArray);
+console.log(tasks);
+
   }
   function handleDelete(i){
     var newArray =tasks.slice();
@@ -34,13 +47,21 @@ function App() {
     <div className="centerNew">
     <h1 className="title">ToDo App</h1>
     <br/><br/> 
-      <ol class="list-group">
-        { tasks.map((task,index) => <li><input type='checkbox' id='task{index}'/>{task} &nbsp;&nbsp;&nbsp;<button onClick={() => handleDelete(index)} class="closebutton">X</button></li>)}
-      </ol>
+      <table class="list-group">
+        <tr>
+    
+          <th>sr.no.</th>
+          <th>Content</th>
+          <th>Date</th>
+          <th>remove</th>
+        </tr>
+        { tasks.map((task,index) => <tr><td>{(index+1)}</td><td>{task.desc}</td><td>{task.date}</td><td><button onClick={() => handleDelete(index)} class="closebutton">X</button></td></tr>)}
+      </table>
       {/* <button onClick={handleAdd}>Add task</button> */}
       <br/>
       <div className="input"> 
-      <input type="text" placeholder="Enter here" id="taskinput"/>
+      <input type="text" placeholder="Enter here" id="taskinput"/><br/>
+      <input type="date" id="dateinput"/>
       <br/>
       <button className='button-4' onClick={handleCancel}>Cancel</button>
       <button className='button-3' onClick={handleSave}>Save</button>
