@@ -40,6 +40,10 @@ console.log(tasks);
     setTasks(newArray);  
 
   }
+  function formatDate(taskdate){
+    let date = new Date(taskdate);
+    return date.getDate()+'/'+date.getMonth()+'/'+date.getFullYear()+' '+(date.getHours()%12)+':'+date.getMinutes() + ' ' + (date.getHours()>=12?'pm':'am');
+  }
   
   return (
     <div>
@@ -50,18 +54,18 @@ console.log(tasks);
       <table class="list-group">
         <tr>
     
-          <th>sr.no.</th>
+          <th>Sr.no.</th>
           <th>Content</th>
           <th>Date</th>
-          <th>remove</th>
+          <th>Remove</th>
         </tr>
-        { tasks.map((task,index) => <tr><td>{(index+1)}</td><td>{task.desc}</td><td>{task.date}</td><td><button onClick={() => handleDelete(index)} class="closebutton">X</button></td></tr>)}
+        { tasks.map((task,index) => <tr><td>{(index+1)}</td><td>{task.desc}</td><td>{formatDate(task.date)}</td><td><button onClick={() => handleDelete(index)} class="closebutton">X</button></td></tr>)}
       </table>
       {/* <button onClick={handleAdd}>Add task</button> */}
       <br/>
       <div className="input"> 
       <input type="text" placeholder="Enter here" id="taskinput"/><br/>
-      <input type="date" id="dateinput"/>
+      <input type="datetime-local" id="dateinput"/>
       <br/>
       <button className='button-4' onClick={handleCancel}>Cancel</button>
       <button className='button-3' onClick={handleSave}>Save</button>
