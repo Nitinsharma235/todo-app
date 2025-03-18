@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import {useReactTable,getCoreRowModel,flexRender,getPaginationRowModel,getSortedRowModel} from '@tanstack/react-table'
 import './App.css';
 
 function App() {
@@ -25,14 +26,16 @@ function App() {
     if(!inputvalue){
       return;
     }
-  var newArray=tasks.slice();
-   let b={};
-   b['desc']=inputvalue;
-   b['date']=dinputvalue;
-  newArray.push(b);
-  setTasks(newArray);
-console.log(tasks);
-
+    var newArray=tasks.slice();
+    let b={};
+    b['desc']=inputvalue;
+    b['date']=dinputvalue;
+    newArray.push(b);
+    setTasks(newArray);
+    setTimeout(() => {
+      table.setPageIndex(table.getPageCount() - 1); // Move to the last page
+    }, 0);
+    console.log(tasks);
   }
   function handleDelete(i){
     var newArray =tasks.slice();
@@ -42,27 +45,106 @@ console.log(tasks);
   }
   function formatDate(taskdate){
     let date = new Date(taskdate);
-    return date.getDate()+'/'+date.getMonth()+'/'+date.getFullYear()+' '+(date.getHours()%12)+':'+date.getMinutes() + ' ' + (date.getHours()>=12?'pm':'am');
+    return date.getDate()+'/'+(date.getMonth()+1)+'/'+date.getFullYear()+' '+(date.getHours()%12===0?12:date.getHours()%12)+':'+date.getMinutes() + ' ' + (date.getHours()>=12?'pm':'am');
   }
-  
+  const columns=[
+
+    {
+      header:'Sr.no.',
+      accessorFn: (row, index) => index + 1, 
+      footer:'Sr.no', 
+
+    },
+    {
+      header:'Content',
+      accessorKey:'desc',
+      footer:'Content'
+
+    },    {
+      header:'Date',
+      accessorKey:'date',
+      footer:'Date',
+      cell: ({ row }) => formatDate(row.original.date), // Format date properly
+    },
+    {
+      header:'Remove',
+      cell: ({ row }) => (
+        <button onClick={() => handleDelete(row.index)} className="closebutton">
+          Delete
+        </button>
+      ), 
+      footer:'Remove'
+
+    },
+  ]
+  const[sorting,setSorting]=useState([])
+  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 }); 
+
+  const table=useReactTable(
+    { data:tasks,
+      columns,
+      getCoreRowModel:getCoreRowModel(),
+      getPaginationRowModel:getPaginationRowModel(),
+      getSortedRowModel:getSortedRowModel(),
+      state:{
+        sorting:sorting,
+        pagination:pagination
+
+      },
+      onSortingChange: setSorting,
+      onPaginationChange: setPagination
+    })
   return (
     <div>
     <div className="backgroundColor">.</div>
     <div className="centerNew">
     <h1 className="title">ToDo App</h1>
     <br/><br/> 
-      <table class="list-group">
-        <tr>
-    
-          <th>Sr.no.</th>
-          <th>Content</th>
-          <th>Date</th>
-          <th>Remove</th>
-        </tr>
-        { tasks.map((task,index) => <tr><td>{(index+1)}</td><td>{task.desc}</td><td>{formatDate(task.date)}</td><td><button onClick={() => handleDelete(index)} class="closebutton">X</button></td></tr>)}
+    <table className='list-group'>
+        <thead>
+        {table.getHeaderGroups().map
+        (headerGroup => (
+          <tr key={headerGroup.id}>
+            {headerGroup.headers.map(header => (
+              <th key={header.id} 
+                  onClick={header.column.getToggleSortingHandler()}>
+               <div> {header.isPlaceholder ? null
+                :flexRender(header.column.columnDef.header,header.getContext()
+                )}
+                  {
+                        { asc: '🔼', desc: '🔽' }[
+                          header.column.getIsSorted() ?? null
+                        ]
+                      }
+                      
+                      </div>
+              </th>
+            ))}
+          </tr>
+        ))}
+        </thead>
+        <tbody>
+            {table.getRowModel().rows.map(row =>(
+            <tr key={row.id}>
+             {row.getVisibleCells().map(cell => (
+              <td key={cell.id}>
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+
+              </td>
+             ))}
+             </tr>
+          ))}
+          <tr>
+          </tr>
+        </tbody>
       </table>
-      {/* <button onClick={handleAdd}>Add task</button> */}
       <br/>
+      <div>
+        <button onClick={() => table.setPageIndex(0)}>First Page</button>
+        <button  disabled={!table.getCanPreviousPage()}  onClick={() => table.previousPage()}>Previous Page</button>
+        <button  disabled={!table.getCanNextPage()} onClick={() => table.nextPage()}>Next Page</button>
+        <button onClick={() => table.setPageIndex(table.getPageCount() - 1)}>Last Page</button>
+      </div>
       <div className="input"> 
       <input type="text" placeholder="Enter here" id="taskinput"/><br/>
       <input type="datetime-local" id="dateinput"/>
