@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {useReactTable,getCoreRowModel,flexRender,getPaginationRowModel,getSortedRowModel} from '@tanstack/react-table'
+import { v4 as uuid } from "uuid";
 import './App.css';
 
 function App() {
@@ -12,12 +13,16 @@ function App() {
     dinput.value=null;
     
   }
+  
   function handleSave() {  
     const input=document.getElementById("taskinput");
     const inputvalue=input.value;
     
     const dinput=document.getElementById("dateinput");
     const dinputvalue=dinput.value;//
+
+    const unique_id = uuid();
+    const small_id = unique_id.slice(0, 8);
 
     if(!dinputvalue){
       return;
@@ -30,6 +35,7 @@ function App() {
     let b={};
     b['desc']=inputvalue;
     b['date']=dinputvalue;
+    b['uuid']=small_id;
     newArray.push(b);
     setTasks(newArray);
     setTimeout(() => {
@@ -37,12 +43,15 @@ function App() {
     }, 0);
     console.log(tasks);
   }
-  function handleDelete(i){
-    var newArray =tasks.slice();
-    newArray.splice(i,1);
-    setTasks(newArray);  
-
+  function handleDelete(i) {
+    setTasks(tasks.filter(task => task.uuid !== i));
   }
+  
+  // function handleDelete(i){
+  //   var newArray =tasks.slice();
+  //   newArray.splice(i,1);
+  //   setTasks(newArray);
+  // }
   function formatDate(taskdate){
     let date = new Date(taskdate);
     return date.getDate()+'/'+(date.getMonth()+1)+'/'+date.getFullYear()+' '+(date.getHours()%12===0?12:date.getHours()%12)+':'+date.getMinutes() + ' ' + (date.getHours()>=12?'pm':'am');
@@ -69,7 +78,7 @@ function App() {
     {
       header:'Remove',
       cell: ({ row }) => (
-        <button onClick={() => handleDelete(row.index)} className="closebutton">
+        <button onClick={() => handleDelete(row.original.uuid)} className="closebutton">
           Delete
         </button>
       ), 
