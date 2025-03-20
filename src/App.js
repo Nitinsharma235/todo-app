@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import {useReactTable,getCoreRowModel,flexRender,getPaginationRowModel,getSortedRowModel} from '@tanstack/react-table'
+import {useReactTable,getCoreRowModel,flexRender,getPaginationRowModel,getSortedRowModel,getFilteredRowModel} from '@tanstack/react-table'
 import { v4 as uuid } from "uuid";
 import './App.css';
 
@@ -19,7 +19,7 @@ function App() {
     const inputvalue=input.value;
     
     const dinput=document.getElementById("dateinput");
-    const dinputvalue=dinput.value;//
+    const dinputvalue=dinput.value;
 
     const unique_id = uuid();
     const small_id = unique_id.slice(0, 8);
@@ -46,7 +46,13 @@ function App() {
   function handleDelete(i) {
     setTasks(tasks.filter(task => task.uuid !== i));
   }
-  
+  // function handleSearch() {
+
+  //   const sinput=document.getElementById("searchinput");
+  //   const sinputvalue=sinput.value;
+  //   alert(sinputvalue);
+  //   setTasks(tasks.filter(task => task.desc === sinputvalue));
+  // }
   // function handleDelete(i){
   //   var newArray =tasks.slice();
   //   newArray.splice(i,1);
@@ -88,20 +94,23 @@ function App() {
   ]
   const[sorting,setSorting]=useState([])
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 }); 
-
+  const[filtering,setFiltering]=useState('')
   const table=useReactTable(
     { data:tasks,
       columns,
       getCoreRowModel:getCoreRowModel(),
       getPaginationRowModel:getPaginationRowModel(),
       getSortedRowModel:getSortedRowModel(),
+      getFilteredRowModel:getFilteredRowModel(),
       state:{
         sorting:sorting,
-        pagination:pagination
+        pagination:pagination,
+        globalFilter:filtering
 
       },
       onSortingChange: setSorting,
-      onPaginationChange: setPagination
+      onPaginationChange: setPagination,
+      onGlobalFilterChange: setFiltering
     })
   return (
     <div>
@@ -156,10 +165,16 @@ function App() {
       </div>
       <div className="input"> 
       <input type="text" placeholder="Enter here" id="taskinput"/><br/>
-      <input type="datetime-local" id="dateinput"/>
+      <input type="datetime-local" id="dateinput"/><br/>
+       <input type="text" placeholder="search here" value={filtering} onChange={(e) =>setFiltering(e.target.value)} />
       <br/>
       <button className='button-4' onClick={handleCancel}>Cancel</button>
-      <button className='button-3' onClick={handleSave}>Save</button>
+      <button className='button-3' onClick={handleSave}>Save</button><br/>
+      <div className="sinput">
+     
+      {/* <button className='button-5' onClick={handleSearch}>search</button>
+      <button className='button-6' onClick={1}>X</button> */}
+      </div>
       </div>
     </div>
     </div>
