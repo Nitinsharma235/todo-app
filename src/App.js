@@ -77,9 +77,8 @@ function App() {
 
     },    {
       header:'Date',
-      accessorKey:'date',
+      accessorFn: (row) => formatDate(row.date), 
       footer:'Date',
-      cell: ({ row }) => formatDate(row.original.date), // Format date properly
     },
     {
       header:'Remove',
