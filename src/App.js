@@ -36,6 +36,7 @@ function App() {
     b['desc']=inputvalue;
     b['date']=dinputvalue;
     b['uuid']=small_id;
+    b['isChecked']=false;
     newArray.push(b);
     setTasks(newArray);
     setTimeout(() => {
@@ -45,6 +46,20 @@ function App() {
   }
   function handleDelete(i) {
     setTasks(tasks.filter(task => task.uuid !== i));
+  }
+  function handleChecked(uuid){
+   // console.log(tasks);
+    let tempTasks=tasks.slice();
+     for(let i=0;i<tempTasks.length;i++){
+      if(tempTasks[i].uuid===uuid){
+        tempTasks[i].isChecked=!tempTasks[i].isChecked;
+      }
+     }
+    setTasks(tempTasks);
+    
+  }
+  function handleClear(){
+    setTasks(tasks.filter(task => !task.isChecked));
   }
   // function handleSearch() {
 
@@ -75,7 +90,8 @@ function App() {
       accessorKey:'desc',
       footer:'Content'
 
-    },    {
+    },   
+    {
       header:'Date',
       accessorFn: (row) => formatDate(row.date), 
       footer:'Date',
@@ -88,6 +104,16 @@ function App() {
         </button>
       ), 
       footer:'Remove'
+
+    },
+    {
+      header:'Checkbox',
+      cell: ({ row }) => ( <input
+        type="checkbox"
+        checked= {row.original.isChecked}
+        onChange={() => handleChecked(row.original.uuid)}
+      />)
+      
 
     },
   ]
@@ -161,6 +187,7 @@ function App() {
         <button  disabled={!table.getCanPreviousPage()}  onClick={() => table.previousPage()}>Previous Page</button>
         <button  disabled={!table.getCanNextPage()} onClick={() => table.nextPage()}>Next Page</button>
         <button onClick={() => table.setPageIndex(table.getPageCount() - 1)}>Last Page</button>
+        <button onClick={handleClear}>Clear</button>
       </div>
       <div className="input"> 
       <input type="text" placeholder="Enter here" id="taskinput"/><br/>
@@ -169,6 +196,7 @@ function App() {
       <br/>
       <button className='button-4' onClick={handleCancel}>Cancel</button>
       <button className='button-3' onClick={handleSave}>Save</button><br/>
+      
       <div className="sinput">
      
       {/* <button className='button-5' onClick={handleSearch}>search</button>
