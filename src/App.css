@@ -56,7 +56,9 @@
   padding: 0;
   border: 1px solid #ccc;
   border-radius: 0.5em;
-  width: 50%;
+  width: 90%;
+  word-wrap: break-word;
+
 }
 .list-group tr {
   border-top: 1px solid #ccc;
@@ -65,6 +67,15 @@
   justify-content: space-between;
   align-items: center;
   align-content: center;
+}
+.list-group td,th{
+ 
+  word-wrap: break-word;
+  align-items: center;
+  align-content: center;
+  padding-left: 5em;
+  width: 15%;
+  
 }
 .list-group .closebutton {
   background-color: rgb(153, 51, 59);
@@ -77,6 +88,17 @@
   text-align: center;
   border-width: 0;
 }
+.list-group .deletebutton {
+  background-color: rgb(153, 51, 59);
+  color: #fff;
+  font-weight: bold;
+  font-size: 60%;
+  border-radius: 18em;
+  min-width: 1.5em;
+  text-align: center;
+  border-width: 0;
+}
+
 .title{ 
   display:block;
   justify-content: center;
@@ -100,7 +122,7 @@
   width:100%;
   align-items: center;
   display: block;
-  padding-left:25%;
+  padding-left:2%;
   color:white;
 }
 
@@ -209,15 +231,10 @@
     box-shadow: rgba(20, 70, 32, .2) 0 1px 0 inset;
   }
 
-  .backgroundColor{
-    background: rgb(2,0,36);
+   .taskImage{
+    height: 50px;
+
+  }
+  body {
     background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
-    background-size: cover;
-    color:white;
-    display:block;
-    position:absolute;
-    z-index: -1;
-    height: 119%;
-    width: 100%;
-    margin-top: -10%;
   }

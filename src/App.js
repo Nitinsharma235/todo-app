@@ -21,8 +21,16 @@ function App() {
     const dinput=document.getElementById("dateinput");
     const dinputvalue=dinput.value;
 
+    const fileinput=document.getElementById("fileinput");
+    let selectedimg="";
+    if(fileinput && fileinput.files.length>0 ){
+    selectedimg=URL.createObjectURL(fileinput.files[0]);
+    }
+    console.log(selectedimg);
+
     const unique_id = uuid();
     const small_id = unique_id.slice(0, 8);
+
 
     if(!dinputvalue){
       return;
@@ -36,6 +44,7 @@ function App() {
     b['desc']=inputvalue;
     b['date']=dinputvalue;
     b['uuid']=small_id;
+    b['img']=selectedimg;
     b['isChecked']=false;
     newArray.push(b);
     setTasks(newArray);
@@ -99,7 +108,7 @@ function App() {
     {
       header:'Remove',
       cell: ({ row }) => (
-        <button onClick={() => handleDelete(row.original.uuid)} className="closebutton">
+        <button onClick={() => handleDelete(row.original.uuid)} className="deletebutton">
           Delete
         </button>
       ), 
@@ -113,9 +122,14 @@ function App() {
         checked= {row.original.isChecked}
         onChange={() => handleChecked(row.original.uuid)}
       />)
-      
-
-    },
+       },
+       {
+        header:'Add Image',
+        cell: ({ row }) => ( 
+         
+          <img class="taskImage" src={row.original.img}  alt="no attachment" />
+        )
+         },
   ]
   const[sorting,setSorting]=useState([])
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 }); 
@@ -139,7 +153,7 @@ function App() {
     })
   return (
     <div>
-    <div className="backgroundColor">.</div>
+   
     <div className="centerNew">
     <h1 className="title">ToDo App</h1>
     <br/><br/> 
@@ -192,6 +206,7 @@ function App() {
       <div className="input"> 
       <input type="text" placeholder="Enter here" id="taskinput"/><br/>
       <input type="datetime-local" id="dateinput"/><br/>
+      <input type="file" id="fileinput" />
        <input type="text" placeholder="search here" value={filtering} onChange={(e) =>setFiltering(e.target.value)} />
       <br/>
       <button className='button-4' onClick={handleCancel}>Cancel</button>
